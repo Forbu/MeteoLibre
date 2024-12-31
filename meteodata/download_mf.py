@@ -7,8 +7,6 @@ We will download two main types of data:
 
 import requests
 from dotenv import dotenv_values
-import gzip
-import csv
 import datetime
 
 config = dict(dotenv_values())
@@ -22,7 +20,7 @@ def download_radar_data():
     # Define the headers
     headers = {
         "accept": "application/gzip",
-        "Authorization": f"Bearer {token}"
+        "apikey": f"{token}"
     }
     
     # we want to download the files and put them in the folder data/raw/radar
