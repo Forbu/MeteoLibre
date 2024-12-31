@@ -1,5 +1,5 @@
 ## requirements for downloading files
 requests
 python-dotenv
-airflow
-cdsapi
+apache-airflow
+pytest

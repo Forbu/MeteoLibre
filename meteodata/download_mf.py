@@ -6,15 +6,18 @@ We will download two main types of data:
 """
 
 import requests
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import gzip
 import csv
+import datetime
 
-config = load_dotenv()
+config = dict(dotenv_values())
+
 
 def download_radar_data():
-    url = config.URL_MOSAIC_RADAR_DATA
-    token = config.TOKEN_RADAR_DATA
+    
+    url = config["URL_MOSAIC_RADAR_DATA"]
+    token = config["TOKEN_RADAR_DATA"]
 
     # Define the headers
     headers = {
@@ -26,17 +29,11 @@ def download_radar_data():
     response = requests.get(url, headers=headers)
 
     # we want to named the gzip file with the date and the time of the file
-    date = response.content.split("_")[1]
-    time = response.content.split("_")[2]
+    date = datetime.datetime.now().strftime("%Y%m%d")
+    time = datetime.datetime.now().strftime("%H%M%S")
     filename = f"{date}_{time}.gzip"
     with open(f"data/raw/radar/{filename}", "wb") as f:
         f.write(response.content)
-    
-    # we want to unzip the file and put the content in the folder data/raw/radar/unzipped
-    with gzip.open(f"data/raw/radar/{filename}", "rb") as f:
-        content = f.read()
-        with open(f"data/raw/radar/unzipped/{filename.replace('.gzip', '.bufr')}", "wb") as f:
-            f.write(content)
 
     return filename
 
@@ -46,22 +43,23 @@ def download_ground_stations_data():
     Download the stations list from the remote server https://public-api.meteofrance.fr/public/DPObs/liste-stations
     and put the data in the data/stations_list.csv file
     """
-    url = config.URL_GROUND_STATIONS_DATA
-    token = config.TOKEN_GROUND_STATIONS_DATA
+    url = config["URL_GROUND_STATIONS_DATA"]
+    token = config["TOKEN_GROUND_STATIONS_DATA"]
     
     headers = {
-        "Authorization": f"Bearer {token}"
+        "accept": "*/*",
+        "apikey": f"{token}"
     }
     response = requests.get(url, headers=headers)
-    data = response.json()
-    with open("data/stations_list.csv", "w") as file:
-        writer = csv.writer(file)
-        writer.writerow(data)
+    
+    filename = "data/raw/ground_stations/stations_list.csv"
+    with open(filename, "wb") as file:
+        file.write(response.content)
 
-def download_ground_stations_data_for_station(id_station=32):
+def download_ground_stations_data_for_station(id_station="08244001"):
     # Define the API endpoint URL
-    url = config.URL_GROUND_STATIONS_DATA_FOR_STATION
-    token = config.TOKEN_GROUND_STATIONS_DATA
+    url = config["URL_GROUND_STATIONS_DATA_FOR_STATION"]
+    token = config["TOKEN_GROUND_STATIONS_DATA"]
 
     # Define the query parameters
     params = {
@@ -72,7 +70,7 @@ def download_ground_stations_data_for_station(id_station=32):
     # Define the headers
     headers = {
         "accept": "*/*",
-        "Authorization": f"Bearer {token}"
+        "apikey": f"{token}"
     }
 
     try:

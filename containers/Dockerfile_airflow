@@ -1,0 +1,13 @@
+## simple dockerfile for downloading files
+
+FROM python:3.10
+
+WORKDIR /app
+
+COPY meteodata/requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY meteodata/ .
+
+EXPOSE 8080
