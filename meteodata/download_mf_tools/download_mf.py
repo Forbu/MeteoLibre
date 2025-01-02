@@ -7,7 +7,10 @@ We will download two main types of data:
 
 import requests
 from dotenv import dotenv_values
+import gzip
 import datetime
+import os
+import shutil
 
 config = dict(dotenv_values())
 
@@ -89,6 +92,24 @@ def download_ground_stations_data_for_station(id_station="08244001"):
             print(response.text)
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
+        
+def preprocess_radar_data(filename):
+    """
+    Unzip the gzip and all the files in the folder data/raw/radar/unzipped
+    
+    Retrieve only the files beggining with the tah "IMFR" and "IMFR" in it
+    """
+    # unzip the file
+    with gzip.open(filename, "rb") as f:
+        content = f.read()
+        with open(f"data/raw/radar/unzipped/{filename.replace('.gzip', '.bufr')}", "wb") as f:
+            f.write(content)
+
+    # retrieve only the files beggining with the tah "IMFR" and "IMFR" in it
+    for file in os.listdir("data/raw/radar/unzipped"):
+        if "IMFR" in file or "IMFR" in file:
+            shutil.move(f"data/raw/radar/unzipped/{file}", f"data/raw/radar/unzipped/{file}")
+
 
 if __name__ == "__main__":
     download_radar_data()
