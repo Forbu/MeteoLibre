@@ -1,5 +1,7 @@
 ## requirements for downloading files
 requests
 python-dotenv
-apache-airflow
 pytest
+fastapi
+uvicorn
+google-cloud-storage

@@ -6,16 +6,23 @@ We will download two main types of data:
 """
 
 import requests
-from dotenv import dotenv_values
 import gzip
 import datetime
 import os
 import shutil
 
-config = dict(dotenv_values())
+# get env variables
+config = {
+    "URL_MOSAIC_RADAR_DATA": os.getenv("URL_MOSAIC_RADAR_DATA"),
+    "TOKEN_RADAR_DATA": os.getenv("TOKEN_RADAR_DATA"),
+    "URL_GROUND_STATIONS_DATA": os.getenv("URL_GROUND_STATIONS_DATA"),
+    "TOKEN_GROUND_STATIONS_DATA": os.getenv("TOKEN_GROUND_STATIONS_DATA"),
+    "URL_GROUND_STATIONS_DATA_FOR_STATION": os.getenv("URL_GROUND_STATIONS_DATA_FOR_STATION")
+}
 
 
 def download_radar_data():
+    """Download the radar data from Meteo France"""
     
     url = config["URL_MOSAIC_RADAR_DATA"]
     token = config["TOKEN_RADAR_DATA"]
