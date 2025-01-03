@@ -1,12 +1,14 @@
 """
 API for downloading radar data from Meteo France
 """
-
-from fastapi import FastAPI
-from download_mf_tools.download_mf import download_radar_data, preprocess_radar_data
-import uvicorn
-from google.cloud import storage
 import os
+from fastapi import FastAPI
+import uvicorn
+
+from google.cloud import storage
+from google.oauth2 import service_account
+
+from download_mf_tools.download_mf import download_radar_data, preprocess_radar_data
 
 app = FastAPI()
 
@@ -19,9 +21,12 @@ async def download_and_upload_radar_data():
     # get all the files in the data/raw/radar/unzipped folder
     files = os.listdir("data/raw/radar/unzipped")
 
+    credentials = service_account.Credentials.from_service_account_default()
+    storage_client = storage.Client(project="SmartCity", credentials=credentials)
+
     # put the files in the GCP bucket
     bucket_name = "meteofrancedata"
-    bucket = storage.Client().bucket(bucket_name)
+    bucket = storage_client.bucket(bucket_name)
     for file in files:
         bucket.upload_file(f"data/raw/radar/unzipped/{file}", file)
 
