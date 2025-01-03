@@ -108,6 +108,11 @@ def preprocess_radar_data(filename):
     with tarfile.open(filename, "r") as f:
         f.extractall(path="data/raw/radar/unzipped")
 
+    # keep only the files that have IMFR or IPRN in the name
+    for file in os.listdir("data/raw/radar/unzipped"):
+        if not "IMFR27" in file and not "IPRN" in file:
+            os.remove(f"data/raw/radar/unzipped/{file}")
+
 if __name__ == "__main__":
     download_radar_data()
     download_ground_stations_data()
