@@ -43,7 +43,7 @@ def download_radar_data():
     with open(f"data/raw/radar/zipped/{filename}", "wb") as f:
         f.write(response.content)
 
-    return filename
+    return f"data/raw/radar/zipped/{filename}"
 
 
 def download_ground_stations_data():
