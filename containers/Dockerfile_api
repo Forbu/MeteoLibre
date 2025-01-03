@@ -1,6 +1,16 @@
-## simple dockerfile for downloading files
-
 FROM python:3.10
+
+## simple dockerfile for downloading files
+ENV URL_MOSAIC_RADAR_DATA "https://public-api.meteofrance.fr/public/DPPaquetRadar/v1/mosaique/paquet"
+ENV URL_GROUND_STATIONS_DATA "https://public-api.meteofrance.fr/public/DPPaquetObs/v1/liste-stations"
+ENV URL_GROUND_STATIONS_DATA_FOR_STATION "https://public-api.meteofrance.fr/public/DPPaquetObs/v1/paquet/infrahoraire-6m"
+
+# those will be overriden by the environment variables
+ENV TOKEN_GROUND_STATIONS_DATA "1234567890"
+ENV TOKEN_RADAR_DATA "1234567890"
+
+# set the environment variable for the project
+ENV PROJECT_ID "SmartCity"
 
 WORKDIR /app
 

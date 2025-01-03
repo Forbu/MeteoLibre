@@ -10,7 +10,7 @@ import gzip
 import datetime
 import os
 import shutil
-
+import tarfile
 # get env variables
 config = {
     "URL_MOSAIC_RADAR_DATA": os.getenv("URL_MOSAIC_RADAR_DATA"),
@@ -39,8 +39,8 @@ def download_radar_data():
     # we want to named the gzip file with the date and the time of the file
     date = datetime.datetime.now().strftime("%Y%m%d")
     time = datetime.datetime.now().strftime("%H%M%S")
-    filename = f"{date}_{time}.gzip"
-    with open(f"data/raw/radar/{filename}", "wb") as f:
+    filename = f"{date}_{time}.tar"
+    with open(f"data/raw/radar/zipped/{filename}", "wb") as f:
         f.write(response.content)
 
     return filename
@@ -102,21 +102,11 @@ def download_ground_stations_data_for_station(id_station="08244001"):
         
 def preprocess_radar_data(filename):
     """
-    Unzip the gzip and all the files in the folder data/raw/radar/unzipped
-    
-    Retrieve only the files beggining with the tah "IMFR" and "IMFR" in it
+    Simply untar the file and put the content in the data/raw/radar/unzipped folder
     """
-    # unzip the file
-    with gzip.open(filename, "rb") as f:
-        content = f.read()
-        with open(f"data/raw/radar/unzipped/{filename.replace('.gzip', '.bufr')}", "wb") as f:
-            f.write(content)
-
-    # retrieve only the files beggining with the tah "IMFR" and "IMFR" in it
-    for file in os.listdir("data/raw/radar/unzipped"):
-        if "IMFR" in file or "IMFR" in file:
-            shutil.move(f"data/raw/radar/unzipped/{file}", f"data/raw/radar/unzipped/{file}")
-
+    # untar the file
+    with tarfile.open(filename, "r") as f:
+        f.extractall(path="data/raw/radar/unzipped")
 
 if __name__ == "__main__":
     download_radar_data()
