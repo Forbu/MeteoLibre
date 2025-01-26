@@ -1,6 +1,6 @@
 # MeteoLibre
 
-Une version open source d'un modèle météo basée sur les données de météo France
+The project aims to create an open-source weather model using data from Météo-France and other sources like ERA5. The project focuses on downloading and processing various weather datasets. The overall goal is to build a dataset that can be used for machine learning to predict the weather.
 
 ## Data part
 
@@ -43,7 +43,7 @@ Airflow ? simple API call with openAPI ?
 	- [x] Add the container image in the registery
 	- [x] Create the GCP cloud run
 	- [x] Create the scheduler
-	- [ ]
+	- [ ] Correction on the API timer
 - [ ] Wait 2 months to get the data
 - [ ] Create the pipeline to preprocess the whole dataset (in order to create a dataset element in HF)
 
