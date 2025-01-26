@@ -22,4 +22,4 @@ COPY meteodata/ .
 
 EXPOSE 8080
 
-CMD ["uvicorn", "meteodata.download_mf_tools.api:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "download_mf_tools.api:app", "--host", "0.0.0.0", "--port", "8080"]

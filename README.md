@@ -26,26 +26,7 @@ But currently I'm not sure of the availability of this data
 The key idea is to use machine learning to predict the weather a few hours / days in advance.
 So we need to download the data every day to create a database (no existant yet).
 
-### Global Planning
 
-1. Check / visual / preprocess radar data to see what's going on (valuable data ?)
-H5 data is OK
-BUFR FILE OK
-First step is OK
-2. Create the pipeline to download the data every days to create a historical dataset
-Airflow ? simple API call with openAPI ?
-- [x] Make the function to call the MF API, save only france data (2 files so for radar and record for ground station data)
-- [x] Put those function in a airflow to automate the process (in a dags)
-	- [x] Download and preprocess
-	- [x] Add push to bucket (digital ocean)
-- [x] Debug the whole thing locally
-- [x] Put the docker in the registery and test the thing with scheduler to automate the downloading
-	- [x] Add the container image in the registery
-	- [x] Create the GCP cloud run
-	- [x] Create the scheduler
-	- [ ] Correction on the API timer
-- [ ] Wait 2 months to get the data
-- [ ] Create the pipeline to preprocess the whole dataset (in order to create a dataset element in HF)
 
 
 
