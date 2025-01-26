@@ -27,6 +27,9 @@ async def download_and_upload_radar_data():
     filename = download_radar_data()
     preprocess_radar_data(filename)
 
+    # remove the zip file once it is not needed anymore
+    os.remove(filename)
+
     # get all the files in the data/raw/radar/unzipped folder
     files = os.listdir(unzipped_dir)
 
