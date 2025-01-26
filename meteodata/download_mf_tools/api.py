@@ -8,7 +8,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from google.cloud import storage
-from google.oauth2 import service_account
+
 
 from download_mf_tools.download_mf import download_radar_data, preprocess_radar_data
 
@@ -30,14 +30,14 @@ async def download_and_upload_radar_data():
     # get all the files in the data/raw/radar/unzipped folder
     files = os.listdir(unzipped_dir)
 
-    credentials = service_account.Credentials.from_service_account_default()
-    storage_client = storage.Client(project="SmartCity", credentials=credentials)
+    storage_client = storage.Client(project="SmartCity")
 
     # put the files in the GCP bucket
     bucket_name = "meteofrancedata"
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client.get_bucket(bucket_name)
     for file in files:
-        bucket.upload_file(f"{unzipped_dir}/{file}", file)
+        blob = bucket.blob(file)
+        blob.upload_from_filename(f"data/raw/radar/unzipped/{file}")
 
     # remove the unzipped folder once it is not needed anymore
     shutil.rmtree(unzipped_dir)
