@@ -11,28 +11,28 @@ import datetime
 import os
 import shutil
 import tarfile
+
 # get env variables
 config = {
     "URL_MOSAIC_RADAR_DATA": os.getenv("URL_MOSAIC_RADAR_DATA"),
     "TOKEN_RADAR_DATA": os.getenv("TOKEN_RADAR_DATA"),
     "URL_GROUND_STATIONS_DATA": os.getenv("URL_GROUND_STATIONS_DATA"),
     "TOKEN_GROUND_STATIONS_DATA": os.getenv("TOKEN_GROUND_STATIONS_DATA"),
-    "URL_GROUND_STATIONS_DATA_FOR_STATION": os.getenv("URL_GROUND_STATIONS_DATA_FOR_STATION")
+    "URL_GROUND_STATIONS_DATA_FOR_STATION": os.getenv(
+        "URL_GROUND_STATIONS_DATA_FOR_STATION"
+    ),
 }
 
 
 def download_radar_data():
     """Download the radar data from Meteo France"""
-    
+
     url = config["URL_MOSAIC_RADAR_DATA"]
     token = config["TOKEN_RADAR_DATA"]
 
     # Define the headers
-    headers = {
-        "accept": "application/gzip",
-        "apikey": f"{token}"
-    }
-    
+    headers = {"accept": "application/gzip", "apikey": f"{token}"}
+
     # we want to download the files and put them in the folder data/raw/radar
     response = requests.get(url, headers=headers)
 
@@ -53,16 +53,14 @@ def download_ground_stations_data():
     """
     url = config["URL_GROUND_STATIONS_DATA"]
     token = config["TOKEN_GROUND_STATIONS_DATA"]
-    
-    headers = {
-        "accept": "*/*",
-        "apikey": f"{token}"
-    }
+
+    headers = {"accept": "*/*", "apikey": f"{token}"}
     response = requests.get(url, headers=headers)
-    
+
     filename = "data/raw/ground_stations/stations_list.csv"
     with open(filename, "wb") as file:
         file.write(response.content)
+
 
 def download_ground_stations_data_for_station(id_station="08244001"):
     # Define the API endpoint URL
@@ -70,28 +68,21 @@ def download_ground_stations_data_for_station(id_station="08244001"):
     token = config["TOKEN_GROUND_STATIONS_DATA"]
 
     # Define the query parameters
-    params = {
-        "id_station": id_station,
-        "format": "csv"
-    }
+    params = {"id_station": id_station, "format": "csv"}
 
     # Define the headers
-    headers = {
-        "accept": "*/*",
-        "apikey": f"{token}"
-    }
+    headers = {"accept": "*/*", "apikey": f"{token}"}
 
     try:
         # Send a GET request
         response = requests.get(url, params=params, headers=headers)
-        
+
         # Check if the request was successful
         if response.status_code == 200:
-            
             filename = f"data/raw/ground_stations/{id_station}.csv"
-            
+
             # Save the response data to a CSV file
-            with open(filename, 'wb') as file:
+            with open(filename, "wb") as file:
                 file.write(response.content)
             print(f"Data saved to {filename}")
         else:
@@ -99,7 +90,8 @@ def download_ground_stations_data_for_station(id_station="08244001"):
             print(response.text)
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
-        
+
+
 def preprocess_radar_data(filename):
     """
     Simply untar the file and put the content in the data/raw/radar/unzipped folder
@@ -113,9 +105,10 @@ def preprocess_radar_data(filename):
         if not "IMFR27" in file and not "IPRN" in file:
             os.remove(f"data/raw/radar/unzipped/{file}")
 
+
+
+
 if __name__ == "__main__":
     download_radar_data()
     download_ground_stations_data()
     download_ground_stations_data_for_station()
-
-
